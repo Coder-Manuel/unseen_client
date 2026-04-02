@@ -19,8 +19,10 @@ dependencies:
   get_storage: ^2.1.1
   url_launcher: ^6.3.2
   firebase_core: ^4.6.0
+  google_sign_in: ^7.2.0
   mixpanel_flutter: ^2.5.0
   supabase_flutter: ^2.12.2
+  sign_in_with_apple: ^7.0.1
   firebase_crashlytics: ^5.1.0
   flutter_svprogresshud: ^1.1.0
   observe_internet_connectivity: ^1.0.2
