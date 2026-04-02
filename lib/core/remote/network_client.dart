@@ -4,7 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:dio/io.dart';
 import 'package:flutter/foundation.dart';
 
-enum NetworkDioClientType { payd, jani, drogon, global }
+enum NetworkDioClientType { supabase, global }
 
 class NetworkClient {
   static final Map<String, String> _headers = {
