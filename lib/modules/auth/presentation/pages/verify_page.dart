@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:pinput/pinput.dart';
 import 'package:unseen/config/colors.dart';
 import 'package:unseen/core/utils/size.util.dart';
 import 'package:unseen/modules/auth/presentation/controllers/register_controller.dart';
@@ -13,6 +13,7 @@ class VerifyPage extends GetView<RegisterController> {
 
   @override
   Widget build(BuildContext context) {
+    final bool isEmailVerification = Get.arguments ?? false;
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -20,7 +21,7 @@ class VerifyPage extends GetView<RegisterController> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              const Spacer(flex: 2),
+              const Spacer(flex: 1),
               Container(
                 width: 80,
                 height: 80,
@@ -28,15 +29,17 @@ class VerifyPage extends GetView<RegisterController> {
                   color: AppColors.biometricBg,
                   shape: BoxShape.circle,
                 ),
-                child: const Icon(
-                  Icons.mail_outline,
+                child: Icon(
+                  isEmailVerification
+                      ? Icons.mail_outline
+                      : Icons.phone_in_talk_outlined,
                   color: AppColors.primary,
                   size: 36,
                 ),
               ),
               28.verticalSpace,
-              const Text(
-                'Verify Email',
+              Text(
+                'Verify ${isEmailVerification ? 'Email' : 'Phone'}',
                 style: TextStyle(
                   color: AppColors.textPrimary,
                   fontSize: 30,
@@ -44,26 +47,39 @@ class VerifyPage extends GetView<RegisterController> {
                 ),
               ),
               12.verticalSpace,
-              Obx(
-                () => Text(
-                  "We've sent a 6-digit code to ${controller.emailCTRL.text}.",
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    color: AppColors.textSecondary,
-                    fontSize: 15,
-                  ),
+              Text(
+                "We've sent a 6-digit code to ${isEmailVerification ? controller.emailCTRL.text : controller.phoneCTRL.text}.",
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  color: AppColors.textSecondary,
+                  fontSize: 15,
                 ),
               ),
-              36.verticalSpace,
-              _OtpRow(controllers: controller.otpControllers),
+              80.verticalSpace,
+              OtpInputField(
+                controller: controller.otpCTRL,
+                onCompleted: (otp) async {
+                  if (isEmailVerification) {
+                    return await controller.verifyEmail(otp);
+                  }
+                  return controller.verifyPhone(otp);
+                },
+              ),
               36.verticalSpace,
               PrimaryButton(
                 label: 'Verify & Continue',
-                onPressed: controller.verifyAndContinue,
+                onPressed: () async {
+                  if (isEmailVerification) {
+                    return await controller.verifyEmail(
+                      controller.otpCTRL.text.trim(),
+                    );
+                  }
+                  return controller.verifyPhone(controller.otpCTRL.text.trim());
+                },
               ),
               20.verticalSpace,
               GestureDetector(
-                onTap: () {},
+                onTap: () async {},
                 child: const Text(
                   'Resend Code',
                   style: TextStyle(
@@ -82,73 +98,36 @@ class VerifyPage extends GetView<RegisterController> {
   }
 }
 
-class _OtpRow extends StatelessWidget {
-  final List<TextEditingController> controllers;
-
-  const _OtpRow({required this.controllers});
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: List.generate(
-        6,
-        (i) => _OtpBox(
-          controller: controllers[i],
-          onChanged: (v) {
-            if (v.length == 1 && i < 5) {
-              FocusScope.of(context).nextFocus();
-            } else if (v.isEmpty && i > 0) {
-              FocusScope.of(context).previousFocus();
-            }
-          },
-        ),
-      ),
-    );
-  }
-}
-
-class _OtpBox extends StatelessWidget {
-  final TextEditingController controller;
-  final ValueChanged<String> onChanged;
-
-  const _OtpBox({required this.controller, required this.onChanged});
+class OtpInputField extends StatelessWidget {
+  final TextEditingController? controller;
+  final void Function(String)? onCompleted;
+  const OtpInputField({super.key, this.controller, this.onCompleted});
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: 48,
-      height: 56,
-      child: TextField(
-        controller: controller,
-        onChanged: onChanged,
-        textAlign: TextAlign.center,
-        maxLength: 1,
-        keyboardType: TextInputType.number,
-        inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-        style: const TextStyle(
-          color: AppColors.textPrimary,
-          fontSize: 20,
-          fontWeight: FontWeight.bold,
-        ),
-        decoration: InputDecoration(
-          counterText: '',
-          filled: true,
-          fillColor: AppColors.otpBoxBg,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide.none,
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: BorderSide.none,
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
-            borderSide: const BorderSide(color: AppColors.primary, width: 2),
-          ),
-        ),
-      ),
+    return Pinput(
+      length: 6,
+      showCursor: true,
+      controller: controller,
+      onCompleted: onCompleted,
+      defaultPinTheme: defaultPinTheme,
+      focusedPinTheme: focusedPinTheme,
+      pinputAutovalidateMode: PinputAutovalidateMode.onSubmit,
+      separatorBuilder: (_) => 15.horizontalSpace,
     );
   }
+
+  PinTheme get defaultPinTheme => PinTheme(
+    width: 45,
+    height: 56,
+    textStyle: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
+    decoration: BoxDecoration(
+      border: Border.all(color: Color.fromRGBO(234, 239, 243, 1)),
+      borderRadius: BorderRadius.circular(12),
+    ),
+  );
+  PinTheme get focusedPinTheme => defaultPinTheme.copyDecorationWith(
+    border: Border.all(color: AppColors.primary),
+    borderRadius: BorderRadius.circular(8),
+  );
 }

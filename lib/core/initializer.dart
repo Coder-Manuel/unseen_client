@@ -29,13 +29,13 @@ class Initializer {
       options: DefaultFirebaseOptions.currentPlatform,
     );
     Env.init();
+    await MonitorService.init();
+    await StorageService.init();
+    await AnalyticsService.init();
     await Supabase.initialize(
       url: Env.supabaseURL,
       anonKey: Env.supabaseAnonKey,
     );
-    await MonitorService.init();
-    await StorageService.init();
-    await AnalyticsService.init();
 
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 

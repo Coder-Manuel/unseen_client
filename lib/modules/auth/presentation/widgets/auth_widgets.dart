@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:unseen/config/colors.dart';
 
 class AuthTextField extends StatelessWidget {
@@ -121,7 +122,12 @@ class GoogleButton extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.asset('assets/icons/google_icon.png', height: 30),
+            Image.asset(
+              GetPlatform.isIOS
+                  ? 'assets/icons/apple_icon.png'
+                  : 'assets/icons/google_icon.png',
+              height: 30,
+            ),
             const SizedBox(width: 12),
             Text(
               label,

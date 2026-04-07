@@ -22,9 +22,9 @@ class LoginInput {
 
 class OAuthInput {
   final String idToken;
-  final String accessToken;
+  final String? accessToken;
 
-  OAuthInput({required this.idToken, required this.accessToken});
+  OAuthInput({required this.idToken, this.accessToken});
 
   Map<String, dynamic> toMap() => {
     'idToken': idToken,
@@ -47,9 +47,6 @@ class SignupInput {
   };
 }
 
-// Alias kept so existing references to RegisterInput continue to compile.
-typedef RegisterInput = SignupInput;
-
 // ─── OTP Verification ─────────────────────────────────────────────────────────
 
 /// Use [email] for email OTP verification, [phone] for SMS OTP verification.
@@ -64,11 +61,7 @@ class VerifyOtpInput {
   VerifyOtpInput.phone({required this.otp, required String this.phone})
     : email = null;
 
-  Map<String, dynamic> toMap() => {
-    'otp': otp,
-    'email': email,
-    'phone': phone,
-  };
+  Map<String, dynamic> toMap() => {'otp': otp, 'email': email, 'phone': phone};
 }
 
 // ─── Phone Setup ──────────────────────────────────────────────────────────────

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:unseen/config/colors.dart';
+import 'package:unseen/core/utils/extensions.dart';
 import 'package:unseen/core/utils/size.util.dart';
 import 'package:unseen/modules/auth/presentation/controllers/register_controller.dart';
 import 'package:unseen/modules/auth/presentation/widgets/auth_widgets.dart';
@@ -71,8 +72,11 @@ class SignupPage extends GetView<RegisterController> {
                     color: AppColors.iconColor,
                     size: 20,
                   ),
-                  validator: (v) =>
-                      (v == null || v.isEmpty) ? 'Enter your email' : null,
+                  validator: (v) {
+                    if (v == null || v.isEmpty) return 'Enter your email';
+                    if (!v.isEmail) return 'Enter valid email';
+                    return null;
+                  },
                 ),
                 16.verticalSpace,
                 Obx(
@@ -85,9 +89,14 @@ class SignupPage extends GetView<RegisterController> {
                       color: AppColors.iconColor,
                       size: 20,
                     ),
-                    validator: (v) => (v == null || v.length < 8)
-                        ? 'Minimum 8 characters'
-                        : null,
+                    validator: (v) {
+                      if (v == null || v.isEmpty) return 'Enter your password';
+                      if (v.length < 8) return 'Minimum 8 characters';
+                      if (!v.isStrongPassword) {
+                        return 'Atleast (Uppercase, lowercase, number & special char)';
+                      }
+                      return null;
+                    },
                   ),
                 ),
                 16.verticalSpace,
@@ -109,13 +118,14 @@ class SignupPage extends GetView<RegisterController> {
                 36.verticalSpace,
                 PrimaryButton(
                   label: 'Continue',
-                  onPressed: () => controller.continueToPhone(formKey),
+                  onPressed: () async => await controller.signUp(formKey),
                 ),
                 28.verticalSpace,
                 const AuthDivider(text: 'OR'),
                 28.verticalSpace,
                 GoogleButton(
-                  label: 'Sign up with Google',
+                  label:
+                      'Continue with ${GetPlatform.isIOS ? 'Apple' : 'Google'}',
                   onPressed: () {},
                 ),
                 32.verticalSpace,

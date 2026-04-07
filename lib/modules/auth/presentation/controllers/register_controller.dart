@@ -6,6 +6,7 @@ import 'package:unseen/modules/auth/data/models/auth.inputs.dart';
 import 'package:unseen/modules/auth/domain/usecases/register.usecase.dart';
 import 'package:unseen/modules/auth/domain/usecases/setup_names.usecase.dart';
 import 'package:unseen/modules/auth/domain/usecases/setup_phone.usecase.dart';
+import 'package:unseen/modules/auth/domain/usecases/verify_email_otp.usecase.dart';
 import 'package:unseen/modules/auth/domain/usecases/verify_phone_otp.usecase.dart';
 import 'package:unseen/modules/auth/presentation/pages/names_setup_page.dart';
 import 'package:unseen/modules/auth/presentation/pages/phone_setup_page.dart';
@@ -16,6 +17,7 @@ class RegisterController extends GetxController {
   final _signupUsecase = Get.find<RegisterUsecase>();
   final _setupPhoneUsecase = Get.find<SetupPhoneUseCase>();
   final _verifyPhoneOtpUsecase = Get.find<VerifyPhoneOtpUseCase>();
+  final _verifyEmailOtpUsecase = Get.find<VerifyEmailOtpUseCase>();
   final _setupNamesUsecase = Get.find<SetupNamesUseCase>();
 
   // ─── Step 1 — Credentials ─────────────────────────────────────────────────
@@ -34,19 +36,13 @@ class RegisterController extends GetxController {
   RxString countryCode = '+254'.obs;
 
   // ─── Step 3 — OTP ─────────────────────────────────────────────────────────
-  final List<TextEditingController> otpControllers = List.generate(
-    6,
-    (_) => TextEditingController(),
-  );
+  final otpCTRL = TextEditingController();
 
   // ─── Step 4 — Names ───────────────────────────────────────────────────────
   final firstNameCTRL = TextEditingController();
   final lastNameCTRL = TextEditingController();
 
-  // ── Actions ─────────────────────────────────────────────────────────────────
-
-  /// Step 1: create account → navigate to phone setup.
-  Future<void> continueToPhone(GlobalKey<FormState> formKey) async {
+  Future<void> signUp(GlobalKey<FormState> formKey) async {
     if (formKey.currentState?.validate() != true) return;
 
     Loader.show(message: 'Creating account...');
@@ -60,12 +56,29 @@ class RegisterController extends GetxController {
 
     response.fold(
       (ex) => Toast.error(ex.message),
+      (_) => Get.toNamed(VerifyPage.route, arguments: true),
+    );
+  }
+
+  Future<void> verifyEmail(String otp) async {
+    if (otp.length < 6) {
+      Toast.error('Enter the 6-digit code');
+      return;
+    }
+
+    Loader.show(message: 'Verifying...');
+    final response = await _verifyEmailOtpUsecase(
+      VerifyOtpInput.email(otp: otp, email: emailCTRL.text.trim()),
+    );
+    Loader.dismiss();
+
+    response.fold(
+      (ex) => Toast.error(ex.message),
       (_) => Get.toNamed(PhoneSetupPage.route),
     );
   }
 
-  /// Step 2: send SMS OTP to the entered phone number.
-  Future<void> sendVerificationCode() async {
+  Future<void> setupPhone() async {
     final phone = phoneCTRL.text.trim();
     if (phone.isEmpty) {
       Toast.error('Enter a valid phone number');
@@ -80,13 +93,11 @@ class RegisterController extends GetxController {
 
     response.fold(
       (ex) => Toast.error(ex.message),
-      (_) => Get.toNamed(VerifyPage.route),
+      (_) => Get.toNamed(VerifyPage.route, arguments: false),
     );
   }
 
-  /// Step 3: verify the SMS OTP.
-  Future<void> verifyAndContinue() async {
-    final otp = otpControllers.map((c) => c.text).join();
+  Future<void> verifyPhone(String otp) async {
     if (otp.length < 6) {
       Toast.error('Enter the 6-digit code');
       return;
@@ -107,7 +118,6 @@ class RegisterController extends GetxController {
     );
   }
 
-  /// Step 4: save names and complete signup.
   Future<void> completeSignup(GlobalKey<FormState> formKey) async {
     if (formKey.currentState?.validate() != true) return;
 
@@ -132,9 +142,7 @@ class RegisterController extends GetxController {
     passwordCTRL.dispose();
     confirmPasswordCTRL.dispose();
     phoneCTRL.dispose();
-    for (final c in otpControllers) {
-      c.dispose();
-    }
+    otpCTRL.dispose();
     firstNameCTRL.dispose();
     lastNameCTRL.dispose();
     super.onClose();

@@ -121,7 +121,11 @@ class LoginPage extends GetView<LoginController> {
                 40.verticalSpace,
                 const AuthDivider(),
                 40.verticalSpace,
-                GoogleButton(label: 'Continue with Google', onPressed: () {}),
+                GoogleButton(
+                  label:
+                      'Continue with ${GetPlatform.isIOS ? 'Apple' : 'Google'}',
+                  onPressed: () async => await controller.oathLogin(),
+                ),
                 30.verticalSpace,
                 GestureDetector(
                   onTap: () => Get.toNamed(SignupPage.route),

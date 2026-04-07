@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:unseen/core/utils/loader.dart';
 import 'package:unseen/core/utils/toast.dart';
 import 'package:unseen/modules/auth/data/models/auth.inputs.dart';
 import 'package:unseen/modules/auth/domain/usecases/login.usecase.dart';
+import 'package:unseen/modules/auth/domain/usecases/login_oauth.usecase.dart';
 import 'package:unseen/modules/home/presentation/pages/home_page.dart';
 
 class LoginController extends GetxController {
   final loginUsecase = Get.find<LoginUseCase>();
+  final oathLoginUsecase = Get.find<LoginOAuthUseCase>();
 
   final emailCTRL = TextEditingController();
   final passwordCTRL = TextEditingController();
@@ -16,6 +20,50 @@ class LoginController extends GetxController {
   Rx<bool> canLoginWithBiometrics = false.obs;
 
   void toggleObscurePass() => obscurePass.value = !obscurePass.value;
+
+  Future<void> oathLogin() async {
+    if (!GetPlatform.isIOS) return _appleLogin();
+    return _googleLogin();
+  }
+
+  Future<void> _googleLogin() async {
+    await GoogleSignIn.instance.initialize();
+    final oathResult = await GoogleSignIn.instance.authenticate();
+    if (oathResult.authentication.idToken == null) {
+      return Toast.error('Unable to initiate google login');
+    }
+
+    final response = await oathLoginUsecase(
+      OAuthInput(idToken: oathResult.authentication.idToken ?? ''),
+    );
+
+    response.fold((ex) => Toast.error(ex.message), (data) {
+      Toast.success('Welcome ${data.displayName}');
+      Get.offAllNamed(HomePage.route);
+    });
+  }
+
+  Future<void> _appleLogin() async {
+    await GoogleSignIn.instance.initialize();
+    final oathResult = await SignInWithApple.getAppleIDCredential(
+      scopes: [
+        AppleIDAuthorizationScopes.email,
+        AppleIDAuthorizationScopes.fullName,
+      ],
+    );
+    if (oathResult.identityToken == null) {
+      return Toast.error('Unable to initiate apple login');
+    }
+
+    final response = await oathLoginUsecase(
+      OAuthInput(idToken: oathResult.identityToken ?? ''),
+    );
+
+    response.fold((ex) => Toast.error(ex.message), (data) {
+      Toast.success('Welcome ${data.displayName}');
+      Get.offAllNamed(HomePage.route);
+    });
+  }
 
   Future<void> login(GlobalKey<FormState> formKey) async {
     if (formKey.currentState?.validate() != true) return;

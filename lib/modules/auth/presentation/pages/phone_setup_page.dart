@@ -31,10 +31,7 @@ class PhoneSetupPage extends GetView<RegisterController> {
               12.verticalSpace,
               const Text(
                 'Required for mission coordination and security.',
-                style: TextStyle(
-                  color: AppColors.textSecondary,
-                  fontSize: 15,
-                ),
+                style: TextStyle(color: AppColors.textSecondary, fontSize: 15),
               ),
               28.verticalSpace,
               Row(
@@ -87,10 +84,14 @@ class PhoneSetupPage extends GetView<RegisterController> {
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
                             borderSide: const BorderSide(
-                                color: AppColors.primary, width: 1.5),
+                              color: AppColors.primary,
+                              width: 1.5,
+                            ),
                           ),
                           contentPadding: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 18),
+                            horizontal: 16,
+                            vertical: 18,
+                          ),
                         ),
                       ),
                     ),
@@ -100,7 +101,7 @@ class PhoneSetupPage extends GetView<RegisterController> {
               32.verticalSpace,
               PrimaryButton(
                 label: 'Send Verification Code',
-                onPressed: controller.sendVerificationCode,
+                onPressed: () async => await controller.setupPhone(),
               ),
               const Spacer(flex: 4),
             ],

@@ -43,9 +43,7 @@ class AuthRepositoryImpl extends AuthRepository {
   Future<RepoResponse<User>> loginWithOAuth(OAuthInput input) async {
     final response = await ErrorWrapper.async<RepoResponse<User>>(
       () async {
-        final res = await remoteDatasource.signupWithOAuth(
-          data: input.toMap(),
-        );
+        final res = await remoteDatasource.signupWithOAuth(data: input.toMap());
         if (res.session == null) {
           return FailureResponse('OAuth login failed, kindly retry');
         }
@@ -129,7 +127,12 @@ class AuthRepositoryImpl extends AuthRepository {
         }
         return SuccessResponse(UserModel.fromMap(res.user?.toJson() ?? {}));
       },
-      onError: (_) => FailureResponse('An error occurred, kindly retry'),
+      onError: (error) {
+        if (error.toString().contains('expired or is invalid')) {
+          return FailureResponse('Invalid or expired code, kindly retry');
+        }
+        return FailureResponse('An error occurred, kindly retry');
+      },
       library: _library,
       description: 'while verifying phone OTP',
     );
