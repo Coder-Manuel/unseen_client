@@ -4,6 +4,7 @@ import 'package:unseen/core/utils/loader.dart';
 import 'package:unseen/core/utils/toast.dart';
 import 'package:unseen/modules/auth/data/models/auth.inputs.dart';
 import 'package:unseen/modules/auth/domain/usecases/login.usecase.dart';
+import 'package:unseen/modules/home/presentation/pages/home_page.dart';
 
 class LoginController extends GetxController {
   final loginUsecase = Get.find<LoginUseCase>();
@@ -34,7 +35,7 @@ class LoginController extends GetxController {
       },
       (data) {
         Toast.success('Welcome ${data.name}');
-        // Get.offAllNamed(HomePage.route);
+        Get.offAllNamed(HomePage.route);
       },
     );
   }

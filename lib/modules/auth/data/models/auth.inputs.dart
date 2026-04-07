@@ -1,32 +1,29 @@
 class RegisterInput {
-  final String name;
-  final String location;
-  final ({String name, String email, String phone, String password}) owner;
+  RegisterInput();
 
-  RegisterInput({
-    required this.name,
-    required this.location,
-    required this.owner,
-  });
-
-  Map<String, dynamic> toMap() => {
-    'input': {
-      'email': owner.email,
-      'name': owner.name,
-      'phone': owner.phone,
-      'password': owner.password,
-      'garage': {'name': name, 'location': location},
-    },
-  };
+  Map<String, dynamic> toMap() => {};
 }
 
 class LoginInput {
-  final String email;
-  final String password;
+  final String? email;
+  final String? phone;
+  final String? password;
+  final String? idToken;
+  final String? accessToken;
 
-  LoginInput({required this.email, required this.password});
+  LoginInput({
+    this.email,
+    this.phone,
+    this.password,
+    this.idToken,
+    this.accessToken,
+  });
 
   Map<String, dynamic> toMap() => {
-    'input': {'email': email, 'password': password},
+    'email': email,
+    'phone': phone,
+    'password': password,
+    'idToken': idToken,
+    'accessToken': accessToken,
   };
 }

@@ -22,8 +22,10 @@ class RegisterController extends GetxController {
   RxString countryCode = '+254'.obs;
 
   // Step 3 — OTP
-  final List<TextEditingController> otpControllers =
-      List.generate(6, (_) => TextEditingController());
+  final List<TextEditingController> otpControllers = List.generate(
+    6,
+    (_) => TextEditingController(),
+  );
 
   // Step 4 — names
   final firstNameCTRL = TextEditingController();
@@ -62,18 +64,7 @@ class RegisterController extends GetxController {
     if (formKey.currentState?.validate() != true) return;
 
     Loader.show(message: 'Creating account...');
-    final response = await registerUsecase(
-      RegisterInput(
-        name: '${firstNameCTRL.text.trim()} ${lastNameCTRL.text.trim()}',
-        location: '',
-        owner: (
-          name: '${firstNameCTRL.text.trim()} ${lastNameCTRL.text.trim()}',
-          email: emailCTRL.text.trim(),
-          phone: '${countryCode.value}${phoneCTRL.text.trim()}',
-          password: passwordCTRL.text.trim(),
-        ),
-      ),
-    );
+    final response = await registerUsecase(RegisterInput());
     Loader.dismiss();
 
     response.fold(

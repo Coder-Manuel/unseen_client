@@ -42,10 +42,7 @@ class AuthRepositoryImpl extends AuthRepository {
   Future<RepoResponse<User>> register(RegisterInput input) async {
     final response = await ErrorWrapper.async<RepoResponse<User>>(
       () async {
-        final res = await remoteDatasource.signUp(
-          data: input.toMap(),
-          password: input.owner.password,
-        );
+        final res = await remoteDatasource.signUp(data: input.toMap());
         if (res.session == null) {
           return FailureResponse('Unable to register, Kindly Retry');
         }
@@ -68,6 +65,7 @@ class AuthRepositoryImpl extends AuthRepository {
   Future<RepoResponse<bool>> logout() async {
     final response = await ErrorWrapper.async<RepoResponse<bool>>(
       () async {
+        await remoteDatasource.logout();
         return SuccessResponse(true);
       },
       onError: (error) {

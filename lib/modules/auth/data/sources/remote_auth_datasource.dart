@@ -2,16 +2,17 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 abstract class RemoteAuthDatasource {
   Future<AuthResponse> loginWithPassword({required Map<String, dynamic> data});
-  Future<AuthResponse> loginWithOAuth({
+  Future<AuthResponse> verifyOTP({
+    required Map<String, dynamic> data,
+    OtpType otpType = OtpType.email,
+  });
+  Future<AuthResponse> signupWithOAuth({
     required Map<String, dynamic> data,
     OAuthProvider provider = OAuthProvider.google,
   });
-  Future<AuthResponse> signUp({
-    required String password,
-    String? email,
-    String? phone,
-    Map<String, dynamic>? data,
-  });
+  Future<AuthResponse> signUp({required Map<String, dynamic> data});
+  Future<UserResponse> updatePhone(String phone);
+  Future<Map<String, dynamic>?> updateNames(Map<String, dynamic> data);
   Future<void> logout();
 }
 
@@ -30,7 +31,7 @@ class RemoteAuthDatasourceImpl extends RemoteAuthDatasource {
   }
 
   @override
-  Future<AuthResponse> loginWithOAuth({
+  Future<AuthResponse> signupWithOAuth({
     required Map<String, dynamic> data,
     OAuthProvider provider = OAuthProvider.google,
   }) {
@@ -42,13 +43,40 @@ class RemoteAuthDatasourceImpl extends RemoteAuthDatasource {
   }
 
   @override
-  Future<AuthResponse> signUp({
-    required String password,
-    String? email,
-    String? phone,
-    Map<String, dynamic>? data,
+  Future<AuthResponse> signUp({required Map<String, dynamic> data}) {
+    return client.auth.signUp(
+      password: data['password'],
+      email: data['email'],
+      data: data['meta'],
+    );
+  }
+
+  @override
+  Future<AuthResponse> verifyOTP({
+    required Map<String, dynamic> data,
+    OtpType otpType = OtpType.email,
   }) {
-    return client.auth.signUp(password: password, email: email, phone: phone);
+    return client.auth.verifyOTP(
+      type: otpType,
+      email: data['email'],
+      phone: data['phone'],
+      token: data['otp'],
+    );
+  }
+
+  @override
+  Future<UserResponse> updatePhone(String phone) {
+    return client.auth.updateUser(UserAttributes(phone: phone));
+  }
+
+  @override
+  Future<Map<String, dynamic>?> updateNames(Map<String, dynamic> data) {
+    return client
+        .from('users')
+        .update(data)
+        .eq('id', client.auth.currentUser?.id ?? '')
+        .select()
+        .single();
   }
 
   @override
