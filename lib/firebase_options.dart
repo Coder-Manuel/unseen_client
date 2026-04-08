@@ -52,7 +52,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: Env.fbAndroidApiKey,
-    appId: '1:613167220460:android:301e67fc59b35899cdc7c9',
+    appId: '1:613167220460:android:bbe16ac5538dcde4cdc7c9',
     messagingSenderId: '613167220460',
     projectId: 'unseen-e3b13',
     storageBucket: 'unseen-e3b13.firebasestorage.app',
@@ -60,14 +60,14 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: Env.fbIosApiKey,
-    appId: '1:613167220460:ios:457bb703d9b68ba7cdc7c9',
+    appId: '1:613167220460:ios:2ba400c3d91bb507cdc7c9',
     messagingSenderId: '613167220460',
     projectId: 'unseen-e3b13',
     storageBucket: 'unseen-e3b13.firebasestorage.app',
     androidClientId:
-        '613167220460-cv314kqll5e9qhembvkaehbd3agtb9ul.apps.googleusercontent.com',
+        '613167220460-83eurqic5dvqp6jcd9pt179ug8p8f49b.apps.googleusercontent.com',
     iosClientId:
-        '613167220460-7tpeaps40b5m21ld20lf8ic807nfceeo.apps.googleusercontent.com',
-    iosBundleId: 'com.unseen.ios',
+        '613167220460-kstg329ehj3d5fq3fi57v4vtif5qs35g.apps.googleusercontent.com',
+    iosBundleId: 'com.unseen.client',
   );
 }

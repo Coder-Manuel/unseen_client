@@ -5,8 +5,8 @@ import 'package:unseen/config/theme.dart';
 import 'package:unseen/core/routes/app_pages.dart';
 import 'package:unseen/modules/auth/presentation/pages/login_page.dart';
 
-class UnSeen extends StatelessWidget {
-  const UnSeen({super.key});
+class UnSeenClient extends StatelessWidget {
+  const UnSeenClient({super.key});
 
   @override
   Widget build(BuildContext context) {

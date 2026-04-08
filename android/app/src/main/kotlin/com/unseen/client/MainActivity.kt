@@ -1,4 +1,4 @@
-package com.unseen.app
+package com.unseen.client
 
 import io.flutter.embedding.android.FlutterActivity
 
