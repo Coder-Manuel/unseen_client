@@ -145,9 +145,7 @@ class _RadarPainter extends CustomPainter {
 
     final ringRadii = [0.28, 0.48, 0.68, 0.88, 1.0];
     for (int i = 0; i < ringRadii.length; i++) {
-      ringPaint.color = AppColors.primary.withAlpha(
-        (50 - i * 8).clamp(10, 60),
-      );
+      ringPaint.color = AppColors.primary.withAlpha((50 - i * 8).clamp(10, 60));
       canvas.drawCircle(center, maxRadius * ringRadii[i], ringPaint);
     }
 
@@ -194,11 +192,7 @@ class _RadarPainter extends CustomPainter {
     );
 
     // ── Center dot (user — teal) ──────────────────────────────────────────
-    canvas.drawCircle(
-      center,
-      6,
-      Paint()..color = const Color(0xFF22C55E),
-    );
+    canvas.drawCircle(center, 6, Paint()..color = const Color(0xFF22C55E));
 
     // ── Scout dots (green, appear once discovered) ─────────────────────────
     for (final dot in scoutDots) {
@@ -215,15 +209,14 @@ class _RadarPainter extends CustomPainter {
           ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 6),
       );
       // Core
-      canvas.drawCircle(
-        pos,
-        5,
-        Paint()..color = const Color(0xFF22C55E),
-      );
+      canvas.drawCircle(pos, 5, Paint()..color = const Color(0xFF22C55E));
     }
 
     // ── Amber reference dot (nearby fixed point) ───────────────────────────
-    final refPos = Offset(center.dx + maxRadius * 0.18, center.dy + maxRadius * 0.08);
+    final refPos = Offset(
+      center.dx + maxRadius * 0.18,
+      center.dy + maxRadius * 0.08,
+    );
     canvas.drawCircle(refPos, 7, Paint()..color = AppColors.primary);
     canvas.drawCircle(
       refPos,
@@ -275,13 +268,10 @@ class _AnimatedScoutListState extends State<_AnimatedScoutList> {
       initialItemCount: 0,
       itemBuilder: (ctx, index, animation) {
         return SlideTransition(
-          position: Tween<Offset>(
-            begin: const Offset(0, 0.4),
-            end: Offset.zero,
-          ).animate(CurvedAnimation(
-            parent: animation,
-            curve: Curves.easeOutCubic,
-          )),
+          position: Tween<Offset>(begin: const Offset(0, 0.4), end: Offset.zero)
+              .animate(
+                CurvedAnimation(parent: animation, curve: Curves.easeOutCubic),
+              ),
           child: FadeTransition(
             opacity: animation,
             child: Padding(
@@ -393,20 +383,20 @@ class _StatusBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     final (label, bg, fg) = switch (status) {
       ScoutStatus.enRoute => (
-          'En route',
-          const Color(0xFF14532D),
-          const Color(0xFF22C55E),
-        ),
+        'En route',
+        const Color(0xFF14532D),
+        const Color(0xFF22C55E),
+      ),
       ScoutStatus.accepting => (
-          'Accepting',
-          const Color(0xFF2D1F00),
-          AppColors.primary,
-        ),
+        'Accepting',
+        const Color(0xFF2D1F00),
+        AppColors.primary,
+      ),
       ScoutStatus.available => (
-          'Available',
-          const Color(0xFF0D2340),
-          const Color(0xFF60A5FA),
-        ),
+        'Available',
+        const Color(0xFF0D2340),
+        const Color(0xFF60A5FA),
+      ),
     };
 
     return Container(
@@ -417,11 +407,7 @@ class _StatusBadge extends StatelessWidget {
       ),
       child: Text(
         label,
-        style: TextStyle(
-          color: fg,
-          fontSize: 11,
-          fontWeight: FontWeight.w700,
-        ),
+        style: TextStyle(color: fg, fontSize: 11, fontWeight: FontWeight.w700),
       ),
     );
   }

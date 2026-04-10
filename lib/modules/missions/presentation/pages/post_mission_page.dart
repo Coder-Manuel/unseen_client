@@ -45,9 +45,13 @@ class PostMissionPage extends GetView<PostMissionController> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // ── GPS banner ───────────────────────────────────────
+                      // ── GPS banner (tappable — opens location picker) ─────
                       Obx(
-                        () => _GpsBanner(location: controller.address.value),
+                        () => _GpsBanner(
+                          location: controller.address.value,
+                          hasLocation: controller.hasLocation.value,
+                          onTap: controller.openLocationPicker,
+                        ),
                       ),
                       24.verticalSpace,
 
@@ -88,12 +92,12 @@ class PostMissionPage extends GetView<PostMissionController> {
                             (i) => Expanded(
                               child: Padding(
                                 padding: EdgeInsets.only(
-                                    right: i < controller.prices.length - 1
-                                        ? 10
-                                        : 0),
+                                  right: i < controller.prices.length - 1
+                                      ? 10
+                                      : 0,
+                                ),
                                 child: _PriceChip(
-                                  label:
-                                      '\$${controller.prices[i]}',
+                                  label: '\$${controller.prices[i]}',
                                   selected:
                                       controller.selectedPriceIndex.value == i,
                                   onTap: () => controller.selectPrice(i),
@@ -144,34 +148,63 @@ class PostMissionPage extends GetView<PostMissionController> {
 
 class _GpsBanner extends StatelessWidget {
   final String location;
-  const _GpsBanner({required this.location});
+  final bool hasLocation;
+  final VoidCallback onTap;
+
+  const _GpsBanner({
+    required this.location,
+    required this.hasLocation,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-      decoration: BoxDecoration(
-        color: const Color(0xFF1E1A0E),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: AppColors.primary.withAlpha(60),
-          width: 1,
-        ),
-      ),
-      child: Row(
-        children: [
-          const Text('📍', style: TextStyle(fontSize: 16)),
-          const SizedBox(width: 10),
-          Text(
-            '$location · GPS confirmed',
-            style: const TextStyle(
-              color: AppColors.primary,
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
-            ),
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        decoration: BoxDecoration(
+          color: hasLocation ? const Color(0xFF1E1A0E) : AppColors.inputBg,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: hasLocation
+                ? AppColors.primary.withAlpha(60)
+                : AppColors.divider.withAlpha(80),
+            width: 1,
           ),
-        ],
+        ),
+        child: Row(
+          children: [
+            Text(
+              hasLocation ? '📍' : '🗺️',
+              style: const TextStyle(fontSize: 16),
+            ),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Text(
+                hasLocation
+                    ? '$location · GPS confirmed'
+                    : 'Tap to set mission location',
+                style: TextStyle(
+                  color: hasLocation
+                      ? AppColors.primary
+                      : AppColors.textSecondary,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                ),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            Icon(
+              Icons.chevron_right,
+              color: hasLocation ? AppColors.primary : AppColors.textSecondary,
+              size: 18,
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -224,8 +257,10 @@ class _MissionTextField extends StatelessWidget {
       style: const TextStyle(color: AppColors.textPrimary, fontSize: 15),
       decoration: InputDecoration(
         hintText: hint,
-        hintStyle:
-            const TextStyle(color: AppColors.textSecondary, fontSize: 15),
+        hintStyle: const TextStyle(
+          color: AppColors.textSecondary,
+          fontSize: 15,
+        ),
         filled: true,
         fillColor: AppColors.inputBg,
         border: OutlineInputBorder(
@@ -240,8 +275,10 @@ class _MissionTextField extends StatelessWidget {
           borderRadius: BorderRadius.circular(12),
           borderSide: const BorderSide(color: AppColors.primary, width: 1.5),
         ),
-        contentPadding:
-            const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 14,
+        ),
       ),
     );
   }
@@ -268,9 +305,7 @@ class _PriceChip extends StatelessWidget {
         duration: const Duration(milliseconds: 180),
         height: 48,
         decoration: BoxDecoration(
-          color: selected
-              ? AppColors.primary.withAlpha(25)
-              : AppColors.inputBg,
+          color: selected ? AppColors.primary.withAlpha(25) : AppColors.inputBg,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
             color: selected ? AppColors.primary : Colors.transparent,

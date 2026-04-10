@@ -8,5 +8,6 @@ class AppPages {
     ...AuthRoutes().pages,
     ...HomeRoutes().pages,
     ...MissionsRoutes().pages,
+    ...HomeRoutes().pages,
   ];
 }

@@ -5,19 +5,25 @@ import 'package:unseen/core/utils/toast.dart';
 import 'package:unseen/modules/missions/data/models/mission.inputs.dart';
 import 'package:unseen/modules/missions/domain/usecases/post_mission.usecase.dart';
 import 'package:unseen/modules/missions/presentation/pages/finding_scouts_page.dart';
+import 'package:unseen/modules/missions/presentation/pages/location_picker_page.dart';
 
 class PostMissionController extends GetxController {
   final _postMissionUseCase = Get.find<PostMissionUseCase>();
 
-  // Fields matching the DB schema
+  // ── Form fields ──────────────────────────────────────────────────────────
   final descriptionCTRL = TextEditingController();
   final durationCTRL = TextEditingController(); // user types minutes
 
-  final RxString address = 'Westlands, Nairobi'.obs;
+  // ── Location (set via LocationPickerPage) ────────────────────────────────
+  final RxString address = ''.obs;
   final RxString currency = 'USD'.obs;
-  final RxDouble latitude = (-1.2676).obs;
-  final RxDouble longitude = (36.8108).obs;
+  final RxDouble latitude = 0.0.obs;
+  final RxDouble longitude = 0.0.obs;
 
+  /// True once the user has confirmed a location from the picker.
+  final RxBool hasLocation = false.obs;
+
+  // ── Price ────────────────────────────────────────────────────────────────
   final List<int> prices = const [10, 20, 35, 50];
   final RxInt selectedPriceIndex = 1.obs;
 
@@ -25,7 +31,29 @@ class PostMissionController extends GetxController {
 
   void selectPrice(int index) => selectedPriceIndex.value = index;
 
+  // ── Location picker ──────────────────────────────────────────────────────
+
+  void openLocationPicker() => Get.toNamed(LocationPickerPage.route);
+
+  /// Called by [LocationPickerController] when the user confirms a location.
+  void setLocation({
+    required String address,
+    required double latitude,
+    required double longitude,
+  }) {
+    this.address.value = address;
+    this.latitude.value = latitude;
+    this.longitude.value = longitude;
+    hasLocation.value = true;
+  }
+
+  // ── Post mission ─────────────────────────────────────────────────────────
+
   Future<void> postMission(GlobalKey<FormState> formKey) async {
+    if (!hasLocation.value) {
+      Toast.error('Please set a location for the mission first.');
+      return;
+    }
     if (formKey.currentState?.validate() != true) return;
 
     // Convert minutes entered by user → seconds for the DB

@@ -64,6 +64,14 @@
     </array>
     <key>GIDClientID</key>
     <string>613167220460-kstg329ehj3d5fq3fi57v4vtif5qs35g.apps.googleusercontent.com</string>
+    <!-- Location permissions for geolocator -->
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>UnSeen uses your location to pin your mission drop point on the map.</string>
+    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+    <string>UnSeen uses your location to pin your mission drop point on the map.</string>
+    <!-- Google Maps API key -->
+    <key>GMSApiKey</key>
+    <string>$(GOOGLE_MAPS_API_KEY)</string>
     <!-- Google Sign-in Section -->
     <key>CFBundleURLTypes</key>
     <array>

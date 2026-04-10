@@ -85,7 +85,7 @@ class RegisterController extends GetxController {
       return;
     }
 
-    Loader.show(message: 'Sending code...');
+    Loader.show(message: 'Updating phone...');
     final response = await _setupPhoneUsecase(
       PhoneSetupInput(phone: '${countryCode.value}$phone'),
     );
@@ -93,7 +93,7 @@ class RegisterController extends GetxController {
 
     response.fold(
       (ex) => Toast.error(ex.message),
-      (_) => Get.toNamed(VerifyPage.route, arguments: false),
+      (_) => Get.toNamed(NamesSetupPage.route, arguments: false),
     );
   }
 

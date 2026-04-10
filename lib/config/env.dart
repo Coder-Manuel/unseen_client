@@ -20,6 +20,11 @@ abstract class Env {
     'FB_ANDROID_API_KEY',
   );
 
+  // ======== Google Maps / Places Config ============
+  static const String googleMapsApiKey = String.fromEnvironment(
+    'GOOGLE_MAPS_API_KEY',
+  );
+
   static void init() {
     const envString = String.fromEnvironment('env', defaultValue: 'staging');
     Environment environment = Environment.values.firstWhere(
