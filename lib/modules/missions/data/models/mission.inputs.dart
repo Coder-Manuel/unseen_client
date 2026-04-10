@@ -34,6 +34,5 @@ class PostMissionInput {
     'currency': currency,
     'price': price,
     'duration_in_sec': durationInSec,
-    'status': 'pending',
   };
 }

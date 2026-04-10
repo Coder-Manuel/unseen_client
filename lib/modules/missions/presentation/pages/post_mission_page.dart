@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:unseen/config/colors.dart';
 import 'package:unseen/core/utils/size.util.dart';
+import 'package:unseen/core/widgets/custom_dropdown.dart';
 import 'package:unseen/modules/missions/presentation/controllers/post_mission_controller.dart';
 
 class PostMissionPage extends GetView<PostMissionController> {
@@ -60,6 +61,7 @@ class PostMissionPage extends GetView<PostMissionController> {
                       6.verticalSpace,
                       _MissionTextField(
                         controller: controller.descriptionCTRL,
+                        keyboardType: TextInputType.text,
                         hint:
                             'e.g. Walk the block and show me the main gate...',
                         maxLines: 4,
@@ -72,13 +74,18 @@ class PostMissionPage extends GetView<PostMissionController> {
                       // ── Duration (minutes) ────────────────────────────────
                       _FieldLabel('DURATION (MINUTES)'),
                       6.verticalSpace,
-                      _MissionTextField(
-                        controller: controller.durationCTRL,
-                        hint: 'e.g. 5',
-                        keyboardType: TextInputType.number,
-                        validator: (v) => (v == null || v.isEmpty)
-                            ? 'Enter duration in minutes'
-                            : null,
+                      Obx(
+                        () => CustomDropDown<int>(
+                          hint: 'Select duration',
+                          value: controller.selectedDuration.value,
+                          items: controller.durations,
+                          itemLabel: (v) => '$v min',
+                          prefixIcon: Icons.timer_outlined,
+                          onChanged: (v) =>
+                              controller.selectedDuration.value = v,
+                          validator: (v) =>
+                              v == null ? 'Select a duration' : null,
+                        ),
                       ),
                       20.verticalSpace,
 

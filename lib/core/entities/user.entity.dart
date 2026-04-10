@@ -1,8 +1,5 @@
 import 'package:unseen/core/entities/base.entity.dart';
-
-enum UserRole { client, scout }
-
-enum UserStatus { active, inactive, suspended }
+import 'package:unseen/core/models/enums.dart';
 
 abstract class User extends BaseEntity {
   final String? email;
@@ -35,8 +32,7 @@ abstract class User extends BaseEntity {
   /// Convenience getter — "James M." style display name.
   String get displayName {
     final first = firstName ?? '';
-    final last =
-        lastName != null && lastName!.isNotEmpty ? lastName![0] : '';
+    final last = lastName != null && lastName!.isNotEmpty ? lastName![0] : '';
     if (first.isEmpty) return email ?? '';
     return last.isNotEmpty ? '$first $last.' : first;
   }

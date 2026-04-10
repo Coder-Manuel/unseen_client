@@ -24,7 +24,7 @@ class LocationPickerPage extends GetView<LocationPickerController> {
                 zoom: 15,
               ),
               onMapCreated: controller.onMapCreated,
-              onCameraMove: controller.onCameraMove,
+              // onCameraMove: controller.onCameraMove,
               onCameraIdle: controller.onCameraIdle,
               myLocationEnabled: true,
               myLocationButtonEnabled: false,
@@ -32,6 +32,7 @@ class LocationPickerPage extends GetView<LocationPickerController> {
               mapToolbarEnabled: false,
               compassEnabled: false,
               // Dark-ish map style — keep map tiles dark to match app theme
+              colorScheme: MapColorScheme.dark,
               style: _darkMapStyle,
             ),
           ),

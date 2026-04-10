@@ -12,7 +12,12 @@ class PostMissionController extends GetxController {
 
   // ── Form fields ──────────────────────────────────────────────────────────
   final descriptionCTRL = TextEditingController();
-  final durationCTRL = TextEditingController(); // user types minutes
+
+  /// Duration options in minutes shown in the dropdown.
+  final List<int> durations = const [5, 10, 15, 20, 30];
+
+  /// Currently selected duration in minutes (null = nothing chosen yet).
+  final Rxn<int> selectedDuration = Rxn<int>();
 
   // ── Location (set via LocationPickerPage) ────────────────────────────────
   final RxString address = ''.obs;
@@ -56,9 +61,8 @@ class PostMissionController extends GetxController {
     }
     if (formKey.currentState?.validate() != true) return;
 
-    // Convert minutes entered by user → seconds for the DB
-    final minutes = int.tryParse(durationCTRL.text.trim()) ?? 5;
-    final durationInSec = minutes * 60;
+    // Convert selected minutes → seconds for the DB
+    final durationInSec = (selectedDuration.value ?? 5) * 60;
 
     Loader.show(message: 'Posting mission...');
     final response = await _postMissionUseCase(
@@ -83,7 +87,6 @@ class PostMissionController extends GetxController {
   @override
   void onClose() {
     descriptionCTRL.dispose();
-    durationCTRL.dispose();
     super.onClose();
   }
 }

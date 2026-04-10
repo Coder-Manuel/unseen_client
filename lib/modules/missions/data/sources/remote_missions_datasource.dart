@@ -17,11 +17,9 @@ class RemoteMissionsDatasourceImpl extends RemoteMissionsDatasource {
 
   @override
   Future<Map<String, dynamic>> postMission(Map<String, dynamic> data) {
-    return client
-        .from('missions')
-        .insert({...data, 'client_id': client.auth.currentUser?.id})
-        .select()
-        .single();
+    // client_id is NOT sent — the DB trigger set_mission_client_id() assigns
+    // it automatically from auth.uid() and also enforces the client-role guard.
+    return client.from('missions').insert(data).select().single();
   }
 
   @override

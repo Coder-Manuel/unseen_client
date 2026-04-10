@@ -1,4 +1,5 @@
 import 'package:unseen/core/entities/user.entity.dart';
+import 'package:unseen/core/models/enums.dart';
 
 enum ScoutStatus { enRoute, accepting, available }
 
@@ -49,5 +50,4 @@ class ScoutEntity extends User {
     ScoutStatus.accepting => 'Accepting',
     ScoutStatus.available => 'Available',
   };
-
 }

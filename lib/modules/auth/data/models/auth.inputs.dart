@@ -1,4 +1,4 @@
-// ─── Login ────────────────────────────────────────────────────────────────────
+import 'package:unseen/core/models/enums.dart';
 
 class LoginInput {
   final String? email;
@@ -18,8 +18,6 @@ class LoginInput {
   };
 }
 
-// ─── OAuth (Google) ───────────────────────────────────────────────────────────
-
 class OAuthInput {
   final String idToken;
   final String? accessToken;
@@ -32,24 +30,24 @@ class OAuthInput {
   };
 }
 
-// ─── Signup ───────────────────────────────────────────────────────────────────
-
 class SignupInput {
   final String email;
   final String password;
+  final UserRole role;
 
-  SignupInput({required this.email, required this.password});
+  SignupInput({
+    required this.email,
+    required this.password,
+    this.role = UserRole.scout,
+  });
 
   Map<String, dynamic> toMap() => {
     'email': email,
     'password': password,
-    'meta': <String, dynamic>{},
+    'meta': {'role': role.name},
   };
 }
 
-// ─── OTP Verification ─────────────────────────────────────────────────────────
-
-/// Use [email] for email OTP verification, [phone] for SMS OTP verification.
 class VerifyOtpInput {
   final String otp;
   final String? email;
@@ -64,16 +62,11 @@ class VerifyOtpInput {
   Map<String, dynamic> toMap() => {'otp': otp, 'email': email, 'phone': phone};
 }
 
-// ─── Phone Setup ──────────────────────────────────────────────────────────────
-
-/// Full phone number including country code, e.g. "+254712345678".
 class PhoneSetupInput {
   final String phone;
 
   PhoneSetupInput({required this.phone});
 }
-
-// ─── Names Setup ──────────────────────────────────────────────────────────────
 
 class NamesInput {
   final String firstName;

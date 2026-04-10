@@ -1,6 +1,6 @@
 import 'package:unseen/core/entities/base.entity.dart';
 
-enum MissionStatus { pending, active, completed, cancelled }
+enum MissionStatus { open, accepted, live, completed, cancelled }
 
 class MissionEntity extends BaseEntity {
   final String? clientId;
@@ -44,7 +44,7 @@ class MissionEntity extends BaseEntity {
     required this.address,
     this.latitude,
     this.longitude,
-    this.status = MissionStatus.pending,
+    this.status = MissionStatus.open,
     this.acceptedAt,
     this.completedAt,
   });

@@ -36,9 +36,11 @@ class MissionModel extends MissionEntity {
   );
 
   static MissionStatus _parseStatus(String? value) => switch (value) {
-    'active' => MissionStatus.active,
+    'open'      => MissionStatus.open,
+    'accepted'  => MissionStatus.accepted,
+    'live'      => MissionStatus.live,
     'completed' => MissionStatus.completed,
     'cancelled' => MissionStatus.cancelled,
-    _ => MissionStatus.pending,
+    _           => MissionStatus.open, // safe fallback
   };
 }
