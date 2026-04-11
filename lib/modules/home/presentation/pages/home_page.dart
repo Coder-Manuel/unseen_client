@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:unseen/config/colors.dart';
 import 'package:unseen/modules/home/presentation/pages/tabs/maps_tab.dart';
-import 'package:unseen/modules/home/presentation/pages/tabs/missions_tab.dart';
+import 'package:unseen/modules/missions/presentation/pages/missions_tab.dart';
 import 'package:unseen/modules/home/presentation/pages/tabs/notifications_tab.dart';
 import 'package:unseen/modules/home/presentation/pages/tabs/settings_tab.dart';
 import 'package:unseen/modules/home/presentation/controllers/home_controller.dart';

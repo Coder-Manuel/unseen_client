@@ -41,116 +41,118 @@ class _MapViewState extends State<_MapView> with TickerProviderStateMixin {
 
     return Scaffold(
       backgroundColor: AppColors.background,
-      body: Stack(
-        children: [
-          // ── Grid background ────────────────────────────────────────────────
-          CustomPaint(
-            size: Size(size.width, size.height),
-            painter: _GridPainter(),
-          ),
-
-          // ── Pulsating scout markers ────────────────────────────────────────
-          ..._scouts.map(
-            (s) => Positioned(
-              left: s.x * size.width - 9,
-              top: s.y * mapHeight - 9,
-              child: _PulsatingScoutMarker(
-                price: s.price,
-                staggerMs: (_scouts.indexOf(s) * 400),
-              ),
+      body: SafeArea(
+        child: Stack(
+          children: [
+            // ── Grid background ────────────────────────────────────────────────
+            CustomPaint(
+              size: Size(size.width, size.height),
+              painter: _GridPainter(),
             ),
-          ),
 
-          // ── User location dot (teal) ───────────────────────────────────────
-          Positioned(
-            left: size.width * 0.52 - 7,
-            top: mapHeight * 0.56 - 7,
-            child: Container(
-              width: 14,
-              height: 14,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: const Color(0xFF00D4CC),
-                border: Border.all(color: Colors.white, width: 1.5),
-                boxShadow: [
-                  BoxShadow(
-                    color: const Color(0xFF00D4CC).withAlpha(120),
-                    blurRadius: 10,
-                    spreadRadius: 2,
-                  ),
-                ],
-              ),
-            ),
-          ),
-
-          // ── Bottom overlay ─────────────────────────────────────────────────
-          Positioned(
-            left: 0,
-            right: 0,
-            bottom: 0,
-            child: Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    AppColors.background.withAlpha(0),
-                    AppColors.background.withAlpha(220),
-                    AppColors.background,
-                  ],
-                  stops: const [0.0, 0.3, 0.6],
+            // ── Pulsating scout markers ────────────────────────────────────────
+            ..._scouts.map(
+              (s) => Positioned(
+                left: s.x * size.width - 9,
+                top: s.y * mapHeight - 50,
+                child: _PulsatingScoutMarker(
+                  price: s.price,
+                  staggerMs: (_scouts.indexOf(s) * 400),
                 ),
               ),
-              padding: const EdgeInsets.fromLTRB(20, 32, 20, 20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Text(
-                    'See anywhere.\nKnow everything.',
-                    style: TextStyle(
-                      color: AppColors.textPrimary,
-                      fontSize: 28,
-                      fontWeight: FontWeight.w900,
-                      height: 1.15,
+            ),
+
+            // ── User location dot (teal) ───────────────────────────────────────
+            Positioned(
+              left: size.width * 0.52 - 7,
+              top: mapHeight * 0.56 - 50,
+              child: Container(
+                width: 14,
+                height: 14,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: const Color(0xFF00D4CC),
+                  border: Border.all(color: Colors.white, width: 1.5),
+                  boxShadow: [
+                    BoxShadow(
+                      color: const Color(0xFF00D4CC).withAlpha(120),
+                      blurRadius: 10,
+                      spreadRadius: 2,
                     ),
-                  ),
-                  const SizedBox(height: 6),
-                  const Text(
-                    'Tap map · Long-press to post a mission',
-                    style: TextStyle(
-                      color: AppColors.textSecondary,
-                      fontSize: 13,
-                    ),
-                  ),
-                  const SizedBox(height: 18),
-                  SizedBox(
-                    width: double.infinity,
-                    height: 58,
-                    child: ElevatedButton(
-                      onPressed: () => Get.toNamed(PostMissionPage.route),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.primary,
-                        foregroundColor: Colors.black,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(50),
-                        ),
-                        elevation: 0,
-                      ),
-                      child: const Text(
-                        '+ Post a Mission',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w800,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
-        ],
+
+            // ── Bottom overlay ─────────────────────────────────────────────────
+            Positioned(
+              left: 0,
+              right: 0,
+              bottom: 0,
+              child: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      AppColors.background.withAlpha(0),
+                      AppColors.background.withAlpha(220),
+                      AppColors.background,
+                    ],
+                    stops: const [0.0, 0.3, 0.6],
+                  ),
+                ),
+                padding: const EdgeInsets.fromLTRB(20, 32, 20, 20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Text(
+                      'See anywhere.\nKnow everything.',
+                      style: TextStyle(
+                        color: AppColors.textPrimary,
+                        fontSize: 28,
+                        fontWeight: FontWeight.w900,
+                        height: 1.15,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    const Text(
+                      'Tap map · Long-press to post a mission',
+                      style: TextStyle(
+                        color: AppColors.textSecondary,
+                        fontSize: 13,
+                      ),
+                    ),
+                    const SizedBox(height: 18),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 50,
+                      child: ElevatedButton(
+                        onPressed: () => Get.toNamed(PostMissionPage.route),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: AppColors.primary,
+                          foregroundColor: Colors.black,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(50),
+                          ),
+                          elevation: 0,
+                        ),
+                        child: const Text(
+                          '+ Post a Mission',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -162,10 +164,7 @@ class _PulsatingScoutMarker extends StatefulWidget {
   final String price;
   final int staggerMs;
 
-  const _PulsatingScoutMarker({
-    required this.price,
-    required this.staggerMs,
-  });
+  const _PulsatingScoutMarker({required this.price, required this.staggerMs});
 
   @override
   State<_PulsatingScoutMarker> createState() => _PulsatingScoutMarkerState();
@@ -185,12 +184,14 @@ class _PulsatingScoutMarkerState extends State<_PulsatingScoutMarker>
       vsync: this,
     );
 
-    _scale = Tween<double>(begin: 1.0, end: 3.2).animate(
-      CurvedAnimation(parent: _ctrl, curve: Curves.easeOut),
-    );
-    _opacity = Tween<double>(begin: 0.55, end: 0.0).animate(
-      CurvedAnimation(parent: _ctrl, curve: Curves.easeOut),
-    );
+    _scale = Tween<double>(
+      begin: 1.0,
+      end: 3.2,
+    ).animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeOut));
+    _opacity = Tween<double>(
+      begin: 0.55,
+      end: 0.0,
+    ).animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeOut));
 
     // Stagger start so scouts don't all pulse in sync
     Future.delayed(Duration(milliseconds: widget.staggerMs), () {
@@ -296,10 +297,10 @@ class _GridPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = AppColors.divider.withAlpha(50)
+      ..color = AppColors.primary.withAlpha(120)
       ..strokeWidth = 0.5;
 
-    const step = 40.0;
+    const step = 60.0;
     for (double x = 0; x < size.width; x += step) {
       canvas.drawLine(Offset(x, 0), Offset(x, size.height), paint);
     }

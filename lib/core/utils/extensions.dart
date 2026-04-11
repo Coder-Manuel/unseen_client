@@ -1,5 +1,27 @@
 import 'package:intl/intl.dart';
 
+extension DateTimeExt on DateTime {
+  /// Returns a human-readable relative time string, e.g. "just now", "3m ago",
+  /// "2h ago", "Yesterday", "3d ago", or an absolute date like "Jan 5".
+  String get timeAgo {
+    final now = DateTime.now();
+    final diff = now.difference(this);
+
+    if (diff.inSeconds < 60) return 'just now';
+    if (diff.inMinutes < 60) return '${diff.inMinutes}m ago';
+    if (diff.inHours < 24) return '${diff.inHours}h ago';
+    if (diff.inDays == 1) return 'Yesterday';
+    if (diff.inDays < 7) return '${diff.inDays}d ago';
+    if (diff.inDays < 365) return DateFormat('MMM d').format(this);
+    return DateFormat('MMM d, yyyy').format(this);
+  }
+}
+
+extension NullableDateTimeExt on DateTime? {
+  /// Safe [timeAgo] — returns `''` when null.
+  String get timeAgo => this?.timeAgo ?? '';
+}
+
 extension StringExt on String? {
   String get inital {
     if (this == null) return '--';

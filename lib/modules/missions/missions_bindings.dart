@@ -10,6 +10,7 @@ import 'package:unseen/modules/missions/domain/usecases/get_nearby_scouts.usecas
 import 'package:unseen/modules/missions/domain/usecases/post_mission.usecase.dart';
 import 'package:unseen/modules/missions/presentation/controllers/finding_scouts_controller.dart';
 import 'package:unseen/modules/missions/presentation/controllers/location_picker_controller.dart';
+import 'package:unseen/modules/missions/presentation/controllers/missions_tab_controller.dart';
 import 'package:unseen/modules/missions/presentation/controllers/post_mission_controller.dart';
 
 class MissionsBindings extends Bindings {
@@ -50,6 +51,10 @@ class MissionsBindings extends Bindings {
     );
 
     // ── Controllers ───────────────────────────────────────────────────────────
+    Get.lazyPut<MissionsTabController>(
+      () => MissionsTabController(),
+      fenix: true,
+    );
     Get.lazyPut<PostMissionController>(
       () => PostMissionController(),
       fenix: true,

@@ -27,12 +27,11 @@ class RemoteMissionsDatasourceImpl extends RemoteMissionsDatasource {
   }
 
   @override
-  Future<List<Map<String, dynamic>>> getMyMissions() async {
-    final result = await client
+  Future<List<Map<String, dynamic>>> getMyMissions() {
+    return client
         .from('missions')
         .select()
-        .eq('client_id', client.auth.currentUser?.id ?? '')
+        // .eq('client_id', client.auth.currentUser?.id ?? '')
         .order('created_at', ascending: false);
-    return List<Map<String, dynamic>>.from(result);
   }
 }
