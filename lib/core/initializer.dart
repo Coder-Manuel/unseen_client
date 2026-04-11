@@ -13,6 +13,7 @@ import 'package:unseen/modules/user/user_bindings.dart';
 
 import 'services/analytics_service/analytics_service.dart';
 import 'services/monitor_service/monitor.service.dart';
+import 'services/notification_service/notification_service.dart';
 
 class Initializer {
   /// Docs for injecting services [Future]
@@ -32,6 +33,7 @@ class Initializer {
     );
     Env.init();
     await MonitorService.init();
+    await NotificationService.init();
     await StorageService.init();
     await AnalyticsService.init();
     await Supabase.initialize(

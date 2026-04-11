@@ -4,6 +4,7 @@ import 'package:unseen/modules/user/data/repositories_impl/user_repository_impl.
 import 'package:unseen/modules/user/data/sources/remote_user_datasource.dart';
 import 'package:unseen/modules/user/domain/repository/user_repository.dart';
 import 'package:unseen/modules/user/domain/usecases/get_user_info.usecase.dart';
+import 'package:unseen/modules/user/domain/usecases/update_fcm_token.usecase.dart';
 import 'package:unseen/modules/user/presentation/controllers/user_controller.dart';
 
 class UserBindings extends Bindings {
@@ -21,6 +22,10 @@ class UserBindings extends Bindings {
     );
     Get.lazyPut<GetUserInfoUseCase>(
       () => GetUserInfoUseCase(repo: Get.find<UserRepository>()),
+      fenix: true,
+    );
+    Get.lazyPut<UpdateFcmTokenUseCase>(
+      () => UpdateFcmTokenUseCase(repo: Get.find<UserRepository>()),
       fenix: true,
     );
 

@@ -34,4 +34,18 @@ class UserRepositoryImpl extends UserRepository {
 
     return response!;
   }
+
+  @override
+  Future<RepoResponse<void>> updateFcmToken(String token) async {
+    final response = await ErrorWrapper.async<RepoResponse<void>>(
+      () async {
+        await remoteDatasource.updateFcmToken(token);
+        return SuccessResponse(null);
+      },
+      onError: (_) => FailureResponse('Failed to update notification token'),
+      library: _library,
+      description: 'while updating FCM token',
+    );
+    return response!;
+  }
 }
