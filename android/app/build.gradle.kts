@@ -23,7 +23,7 @@ if (keystorePropertiesFile.exists()) {
 val localProperties = Properties()
 val localPropertiesFile = rootProject.file("local.properties")
 if (localPropertiesFile.exists()) {
-    localPropertiesFile.withReader("UTF-8") { localProperties.load(it) }
+    localProperties.load(FileInputStream(localPropertiesFile))
 }
 
 android {
@@ -48,7 +48,7 @@ android {
         versionName = flutter.versionName
         // Injects GOOGLE_MAPS_API_KEY into AndroidManifest.xml as ${GOOGLE_MAPS_API_KEY}
         manifestPlaceholders["GOOGLE_MAPS_API_KEY"] =
-            localProperties.getProperty("GOOGLE_MAPS_API_KEY", "")
+            localProperties.getProperty("GOOGLE_MAPS_API_KEY") ?: ""
     }
 
     signingConfigs {
