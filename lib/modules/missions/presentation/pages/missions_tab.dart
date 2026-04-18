@@ -8,6 +8,7 @@ import 'package:unseen/modules/missions/data/models/enum.dart';
 import 'package:unseen/modules/missions/domain/entities/mission.entity.dart';
 import 'package:unseen/modules/missions/presentation/controllers/missions_tab_controller.dart';
 import 'package:unseen/modules/missions/presentation/pages/post_mission_page.dart';
+import 'package:unseen/modules/rating/presentation/pages/rate_scout_page.dart';
 
 class MissionsTab extends GetView<MissionsTabController> {
   const MissionsTab({super.key});
@@ -184,132 +185,142 @@ class _MissionCard extends StatelessWidget {
         ? DateTime.tryParse(mission.createdAt!)
         : null;
 
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: AppColors.surface,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: AppColors.divider.withAlpha(40), width: 0.5),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Address as mission "title"
-              Expanded(
-                child: Text(
-                  '${mission.type?.label}\n${mission.address}',
-                  style: const TextStyle(
-                    color: AppColors.textPrimary,
-                    fontSize: 15,
-                    fontWeight: FontWeight.w700,
-                  ),
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                ),
-              ),
-              const SizedBox(width: 8),
-              _StatusBadge(status: mission.status),
-            ],
+    return GestureDetector(
+      onTap: () {
+        if (mission.status == MissionStatus.completed) {
+          Get.toNamed(RateScoutPage.route, arguments: mission);
+        }
+      },
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: AppColors.surface,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: AppColors.divider.withAlpha(40),
+            width: 0.5,
           ),
-          const SizedBox(height: 8),
-          Text(
-            mission.description,
-            style: const TextStyle(
-              color: AppColors.textSecondary,
-              fontSize: 13,
-              height: 1.4,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Address as mission "title"
+                Expanded(
+                  child: Text(
+                    '${mission.type?.label}\n${mission.address}',
+                    style: const TextStyle(
+                      color: AppColors.textPrimary,
+                      fontSize: 15,
+                      fontWeight: FontWeight.w700,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                _StatusBadge(status: mission.status),
+              ],
             ),
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-          ),
-          const SizedBox(height: 12),
-          Row(
-            children: [
-              // Duration
-              const Icon(
-                    Icons.timer_outlined,
-                    color: AppColors.textSecondary,
-                    size: 14,
-                  )
-                  .animate(onPlay: (c) => c.repeat(reverse: true))
-                  .scaleXY(
-                    begin: 0.9,
-                    end: 1.0,
-                    duration: 800.ms,
-                    curve: Curves.easeInOut,
-                  ),
-              const SizedBox(width: 4),
-              Text(
-                mission.durationLabel,
-                style: const TextStyle(
-                  color: AppColors.textSecondary,
-                  fontSize: 12,
-                ),
-              ),
-              const SizedBox(width: 14),
-
-              // Price
-              Text(
-                '${mission.currency} ${mission.price.toStringAsFixed(0)}',
-                style: const TextStyle(
-                  color: AppColors.primary,
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              const Spacer(),
-              // Time ago
-              const Icon(
-                Icons.access_time,
+            const SizedBox(height: 8),
+            Text(
+              mission.description,
+              style: const TextStyle(
                 color: AppColors.textSecondary,
-                size: 13,
+                fontSize: 13,
+                height: 1.4,
               ),
-              const SizedBox(width: 3),
-              Text(
-                createdAt.timeAgo,
-                style: const TextStyle(
-                  color: AppColors.textSecondary,
-                  fontSize: 12,
-                ),
-              ),
-            ],
-          ),
-          if (hasActiveSession || mission.status == MissionStatus.live) ...[
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
             const SizedBox(height: 12),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                onPressed: onJoinStream,
-                icon: const Icon(Icons.videocam_rounded, size: 20)
+            Row(
+              children: [
+                // Duration
+                const Icon(
+                      Icons.timer_outlined,
+                      color: AppColors.textSecondary,
+                      size: 14,
+                    )
                     .animate(onPlay: (c) => c.repeat(reverse: true))
                     .scaleXY(
-                      begin: 0.85,
+                      begin: 0.9,
                       end: 1.0,
-                      duration: 900.ms,
+                      duration: 800.ms,
                       curve: Curves.easeInOut,
                     ),
-                label: const Text(
-                  'Join Stream',
-                  style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13),
-                ),
-                style: ElevatedButton.styleFrom(
-                  minimumSize: const Size(double.infinity, 30),
-                  backgroundColor: Colors.red[800],
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 10),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
+                const SizedBox(width: 4),
+                Text(
+                  mission.durationLabel,
+                  style: const TextStyle(
+                    color: AppColors.textSecondary,
+                    fontSize: 12,
                   ),
-                  elevation: 0,
+                ),
+                const SizedBox(width: 14),
+
+                // Price
+                Text(
+                  '${mission.currency} ${mission.price.toStringAsFixed(0)}',
+                  style: const TextStyle(
+                    color: AppColors.primary,
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const Spacer(),
+                // Time ago
+                const Icon(
+                  Icons.access_time,
+                  color: AppColors.textSecondary,
+                  size: 13,
+                ),
+                const SizedBox(width: 3),
+                Text(
+                  createdAt.timeAgo,
+                  style: const TextStyle(
+                    color: AppColors.textSecondary,
+                    fontSize: 12,
+                  ),
+                ),
+              ],
+            ),
+            if (hasActiveSession || mission.status == MissionStatus.live) ...[
+              const SizedBox(height: 12),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  onPressed: onJoinStream,
+                  icon: const Icon(Icons.videocam_rounded, size: 20)
+                      .animate(onPlay: (c) => c.repeat(reverse: true))
+                      .scaleXY(
+                        begin: 0.85,
+                        end: 1.0,
+                        duration: 900.ms,
+                        curve: Curves.easeInOut,
+                      ),
+                  label: const Text(
+                    'Join Stream',
+                    style: TextStyle(fontWeight: FontWeight.w700, fontSize: 13),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    minimumSize: const Size(double.infinity, 30),
+                    backgroundColor: Colors.red[800],
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    elevation: 0,
+                  ),
                 ),
               ),
-            ),
+            ],
           ],
-        ],
+        ),
       ),
     );
   }

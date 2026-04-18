@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:get/get.dart';
 import 'package:livekit_client/livekit_client.dart';
 import 'package:unseen/modules/missions/domain/entities/mission.entity.dart';
-import 'package:unseen/modules/stream%20copy/presentation/pages/rate_scout_page.dart';
+import 'package:unseen/modules/rating/presentation/pages/rate_scout_page.dart';
 import 'package:unseen/modules/stream/domain/usecases/join_stream.usecase.dart';
 
 // ── Scout presence status ─────────────────────────────────────────────────────

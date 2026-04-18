@@ -28,19 +28,16 @@ class RatingController extends GetxController
       'has been released to $scoutName.';
 
   @override
-  void onReady() {
+  void onInit() {
     checkCtrl = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 600),
     );
-    super.onReady();
-  }
-
-  Future<void> init() async {
     mission = Get.arguments as MissionEntity;
     checkScale = CurvedAnimation(parent: checkCtrl, curve: Curves.elasticOut);
     // Pop the check icon in on entry.
     checkCtrl.forward();
+    super.onInit();
   }
 
   Future<void> createRating() async {

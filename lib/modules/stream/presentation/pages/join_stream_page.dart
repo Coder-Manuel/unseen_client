@@ -30,6 +30,7 @@ class _JoinStreamPageState extends State<JoinStreamPage> {
 
     _mission = Get.arguments as MissionEntity;
     _ctrl = Get.find<JoinStreamController>();
+    _ctrl.mission = _mission;
 
     WidgetsBinding.instance.addPostFrameCallback(
       (_) => _ctrl.initialize(_mission),
@@ -405,10 +406,7 @@ class _StatusBadge extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (dot) ...[
-            _PulsingDot(color: color),
-            const SizedBox(width: 6),
-          ],
+          if (dot) ...[_PulsingDot(color: color), const SizedBox(width: 6)],
           if (icon != null) ...[
             Icon(icon, color: color, size: 13),
             const SizedBox(width: 5),
@@ -457,9 +455,10 @@ class _TimerBadgeState extends State<_TimerBadge>
       vsync: this,
       duration: const Duration(milliseconds: 700),
     );
-    _scale = Tween<double>(begin: 1.0, end: 1.06).animate(
-      CurvedAnimation(parent: _pulse, curve: Curves.easeInOut),
-    );
+    _scale = Tween<double>(
+      begin: 1.0,
+      end: 1.06,
+    ).animate(CurvedAnimation(parent: _pulse, curve: Curves.easeInOut));
   }
 
   @override
@@ -594,8 +593,7 @@ class _ScoutAvatarState extends State<_ScoutAvatar>
 
   @override
   Widget build(BuildContext context) {
-    final initial =
-        widget.name.isNotEmpty ? widget.name[0].toUpperCase() : 'S';
+    final initial = widget.name.isNotEmpty ? widget.name[0].toUpperCase() : 'S';
 
     return AnimatedBuilder(
       animation: _ringOpacity,
@@ -605,9 +603,7 @@ class _ScoutAvatarState extends State<_ScoutAvatar>
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           border: Border.all(
-            color: _ringColor.withAlpha(
-              (255 * _ringOpacity.value).round(),
-            ),
+            color: _ringColor.withAlpha((255 * _ringOpacity.value).round()),
             width: 2.5,
           ),
         ),
@@ -687,14 +683,10 @@ class _MicButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bg = enabled
-        ? const Color(0xFF374151)         // grey when mic is on
-        : const Color(0xFF3B0000);        // dark red when muted
-    final iconColor = enabled
-        ? Colors.white
-        : const Color(0xFFEF4444);
-    final labelColor = enabled
-        ? Colors.white70
-        : const Color(0xFFEF4444);
+        ? const Color(0xFF374151) // grey when mic is on
+        : const Color(0xFF3B0000); // dark red when muted
+    final iconColor = enabled ? Colors.white : const Color(0xFFEF4444);
+    final labelColor = enabled ? Colors.white70 : const Color(0xFFEF4444);
     final icon = enabled ? Icons.mic_rounded : Icons.mic_off_rounded;
     final label = enabled ? 'MIC' : 'MUTED';
 
@@ -764,7 +756,10 @@ class _FullScreenMessage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(color: Colors.black, child: Center(child: child));
+    return Container(
+      color: Colors.black,
+      child: Center(child: child),
+    );
   }
 }
 
@@ -806,10 +801,7 @@ class _PulsingDotState extends State<_PulsingDot>
       child: Container(
         width: 7,
         height: 7,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: widget.color,
-        ),
+        decoration: BoxDecoration(shape: BoxShape.circle, color: widget.color),
       ),
     );
   }

@@ -76,7 +76,7 @@ class RateScoutPage extends GetView<RatingController> {
                 return _RatingCard(
                   scoutName: controller.scoutName,
                   selectedStars: controller.selectedStars.value,
-                  onStarTapped: (i) => controller.selectedStars.value + i,
+                  onStarTapped: (i) => controller.selectedStars.value = i + 1,
                 );
               }),
 
