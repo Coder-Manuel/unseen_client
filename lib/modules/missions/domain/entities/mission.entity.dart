@@ -1,6 +1,7 @@
 import 'package:unseen/core/entities/base.entity.dart';
 import 'package:unseen/core/entities/user.entity.dart';
 import 'package:unseen/modules/missions/data/models/enum.dart';
+import 'package:unseen/modules/rating/domain/entities/rating.entity.dart';
 
 class MissionEntity extends BaseEntity {
   final String? clientId;
@@ -34,6 +35,7 @@ class MissionEntity extends BaseEntity {
 
   final String? acceptedAt;
   final String? completedAt;
+  final List<RatingEntity> ratings;
 
   MissionEntity({
     super.id,
@@ -54,7 +56,10 @@ class MissionEntity extends BaseEntity {
     this.type,
     this.acceptedAt,
     this.completedAt,
+    this.ratings = const [],
   });
+
+  bool get hasRated => ratings.any((r) => r.fromUserId == clientId);
 
   /// Friendly duration string, e.g. "5 min" or "1 hr 30 min".
   String get durationLabel {

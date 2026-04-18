@@ -2,6 +2,8 @@ import 'package:unseen/core/models/user.model.dart';
 import 'package:unseen/core/utils/ewkb_parser.dart';
 import 'package:unseen/modules/missions/data/models/enum.dart';
 import 'package:unseen/modules/missions/domain/entities/mission.entity.dart';
+import 'package:unseen/modules/rating/data/models/rating.model.dart';
+import 'package:unseen/modules/rating/domain/entities/rating.entity.dart';
 
 class MissionModel extends MissionEntity {
   MissionModel({
@@ -22,6 +24,7 @@ class MissionModel extends MissionEntity {
     super.type,
     super.acceptedAt,
     super.completedAt,
+    super.ratings,
   });
 
   factory MissionModel.fromMap(Map<String, dynamic> m) {
@@ -53,6 +56,11 @@ class MissionModel extends MissionEntity {
               orElse: () => MissionType.surveillance,
             )
           : null,
+      ratings:
+          m['ratings']
+              ?.map<RatingEntity>((data) => RatingModel.fromMap(data))
+              .toList() ??
+          [],
       acceptedAt: m['accepted_at']?.toString(),
       completedAt: m['completed_at']?.toString(),
     );

@@ -16,6 +16,7 @@ class MapsTabController extends GetxController {
   // ── State ─────────────────────────────────────────────────────────────────
   final RxList<MissionEntity> activeMissions = <MissionEntity>[].obs;
   final RxBool isLoading = true.obs;
+  Set<String> shownSessions = {};
 
   StreamSubscription<dynamic>? _missionSubscription;
   StreamSubscription<dynamic>? _sessionSubscription;
@@ -67,6 +68,8 @@ class MapsTabController extends GetxController {
         .where((m) => m.id == session.missionId)
         .firstOrNull;
     if (mission == null) return;
+    if (shownSessions.contains(mission.id)) return;
+    shownSessions.add(mission.id ?? '');
 
     // Show dialog.
     Get.dialog(JoinStreamDialog(mission: mission), barrierDismissible: true);

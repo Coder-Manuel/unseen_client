@@ -187,7 +187,7 @@ class _MissionCard extends StatelessWidget {
 
     return GestureDetector(
       onTap: () {
-        if (mission.status == MissionStatus.completed) {
+        if (mission.status == MissionStatus.completed && !mission.hasRated) {
           Get.toNamed(RateScoutPage.route, arguments: mission);
         }
       },

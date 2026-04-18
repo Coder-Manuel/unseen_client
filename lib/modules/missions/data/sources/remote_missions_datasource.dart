@@ -42,7 +42,14 @@ class RemoteMissionsDatasourceImpl extends RemoteMissionsDatasource {
             last_name,
             rating,
             total_reviews
-          )""")
+          ),
+          ratings!ratings_mission_id_fkey (
+            id,
+            from_user_id,
+            to_user_id,
+            score
+          )
+          """)
         .order('created_at', ascending: false);
   }
 
