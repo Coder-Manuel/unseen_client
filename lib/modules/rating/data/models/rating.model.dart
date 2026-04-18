@@ -1,4 +1,4 @@
-import 'package:unseen/modules/missions/domain/entities/rating.entity.dart';
+import 'package:unseen/modules/rating/domain/entities/rating.entity.dart';
 
 class RatingModel extends RatingEntity {
   RatingModel({
