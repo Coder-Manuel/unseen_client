@@ -14,6 +14,10 @@ class UserController extends GetxController {
 
   Rx<User?> currentUser = Rx<User?>(null);
 
+  // ── Settings toggles ──────────────────────────────────────────────────────
+  final RxBool biometricsEnabled = true.obs;
+  final RxBool notificationsEnabled = true.obs;
+
   /// Periodic retry timer — active only while the FCM token is still null.
   Timer? _fcmRetryTimer;
 

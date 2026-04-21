@@ -3,18 +3,8 @@ import 'package:get/get.dart';
 import 'package:unseen/config/colors.dart';
 import 'package:unseen/modules/user/presentation/controllers/user_controller.dart';
 
-class SettingsTab extends StatefulWidget {
+class SettingsTab extends GetView<UserController> {
   const SettingsTab({super.key});
-
-  @override
-  State<SettingsTab> createState() => _SettingsTabState();
-}
-
-class _SettingsTabState extends State<SettingsTab> {
-  final _userCtrl = Get.find<UserController>();
-
-  bool _biometricsEnabled = true;
-  bool _notificationsEnabled = true;
 
   @override
   Widget build(BuildContext context) {
@@ -27,16 +17,14 @@ class _SettingsTabState extends State<SettingsTab> {
             // ── Profile header ──────────────────────────────────────────────
             const SizedBox(height: 36),
             Obx(() {
-              final user = _userCtrl.currentUser.value;
+              final user = controller.currentUser.value;
               final name = user?.fullName ?? 'User';
               final role = _roleLabel(user?.role?.name);
               final rating = user?.rating?.toStringAsFixed(1) ?? '–';
               return Column(
                 children: [
-                  // Avatar with golden ring
                   _ProfileAvatar(name: name),
                   const SizedBox(height: 16),
-                  // Name — italic serif feel via fontStyle
                   Text(
                     name,
                     style: const TextStyle(
@@ -47,7 +35,6 @@ class _SettingsTabState extends State<SettingsTab> {
                     ),
                   ),
                   const SizedBox(height: 6),
-                  // Role · rating
                   Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -94,26 +81,31 @@ class _SettingsTabState extends State<SettingsTab> {
               child: Column(
                 children: [
                   // Enable Biometrics
-                  _SettingsCard(
-                    icon: Icons.fingerprint_rounded,
-                    title: 'Enable Biometrics',
-                    subtitle: 'Face ID or Fingerprint',
-                    trailing: _AppSwitch(
-                      value: _biometricsEnabled,
-                      onChanged: (v) => setState(() => _biometricsEnabled = v),
+                  Obx(
+                    () => _SettingsCard(
+                      icon: Icons.fingerprint_rounded,
+                      title: 'Enable Biometrics',
+                      subtitle: 'Face ID or Fingerprint',
+                      trailing: _AppSwitch(
+                        value: controller.biometricsEnabled.value,
+                        onChanged: (v) =>
+                            controller.biometricsEnabled.value = v,
+                      ),
                     ),
                   ),
                   const SizedBox(height: 12),
 
                   // Push Notifications
-                  _SettingsCard(
-                    icon: Icons.notifications_outlined,
-                    title: 'Push Notifications',
-                    subtitle: 'Mission alerts & updates',
-                    trailing: _AppSwitch(
-                      value: _notificationsEnabled,
-                      onChanged: (v) =>
-                          setState(() => _notificationsEnabled = v),
+                  Obx(
+                    () => _SettingsCard(
+                      icon: Icons.notifications_outlined,
+                      title: 'Push Notifications',
+                      subtitle: 'Mission alerts & updates',
+                      trailing: _AppSwitch(
+                        value: controller.notificationsEnabled.value,
+                        onChanged: (v) =>
+                            controller.notificationsEnabled.value = v,
+                      ),
                     ),
                   ),
                   const SizedBox(height: 12),
@@ -158,7 +150,7 @@ class _SettingsTabState extends State<SettingsTab> {
 
                   const SizedBox(height: 28),
 
-                  // ── Logout button ─────────────────────────────────────────
+                  // ── Logout ────────────────────────────────────────────────
                   _LogoutButton(onTap: () {}),
 
                   const SizedBox(height: 24),
@@ -184,9 +176,8 @@ class _SettingsTabState extends State<SettingsTab> {
     );
   }
 
-  String _roleLabel(String? role) {
-    if (role == null) return 'Client';
-    switch (role.toLowerCase()) {
+  static String _roleLabel(String? role) {
+    switch (role?.toLowerCase()) {
       case 'scout':
         return 'Scout';
       case 'client':
@@ -302,7 +293,6 @@ class _SettingsCard extends StatelessWidget {
                 ),
               ),
 
-              // Trailing
               if (trailing != null) trailing!,
             ],
           ),
