@@ -18,14 +18,6 @@ if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(FileInputStream(keystorePropertiesFile))
 }
 
-// local.properties holds secrets that must NOT be committed (already gitignored).
-// Add: GOOGLE_MAPS_API_KEY=AIza... to android/local.properties
-val localProperties = Properties()
-val localPropertiesFile = rootProject.file("local.properties")
-if (localPropertiesFile.exists()) {
-    localProperties.load(FileInputStream(localPropertiesFile))
-}
-
 android {
     namespace = "com.unseen.client"
     compileSdk = flutter.compileSdkVersion
@@ -50,7 +42,7 @@ android {
         versionName = flutter.versionName
         // Injects GOOGLE_MAPS_API_KEY into AndroidManifest.xml as ${GOOGLE_MAPS_API_KEY}
         manifestPlaceholders["GOOGLE_MAPS_API_KEY"] =
-            localProperties.getProperty("GOOGLE_MAPS_API_KEY") ?: ""
+            keystoreProperties.getProperty("GOOGLE_MAPS_API_KEY") ?: ""
     }
 
     signingConfigs {
