@@ -4,12 +4,17 @@ import 'dart:developer';
 import 'package:get/get.dart';
 import 'package:unseen/core/entities/user.entity.dart';
 import 'package:unseen/core/services/notification_service/notification_service.dart';
+import 'package:unseen/core/utils/loader.dart';
+import 'package:unseen/core/utils/toast.dart';
+import 'package:unseen/modules/auth/domain/usecases/logout.usecase.dart';
+import 'package:unseen/modules/auth/presentation/pages/login_page.dart';
 import 'package:unseen/modules/user/domain/usecases/get_user_info.usecase.dart';
 import 'package:unseen/modules/user/domain/usecases/update_fcm_token.usecase.dart';
 
 class UserController extends GetxController {
-  final getUserInfoUsecase = Get.find<GetUserInfoUseCase>();
+  final _getUserInfoUsecase = Get.find<GetUserInfoUseCase>();
   final _updateFcmTokenUseCase = Get.find<UpdateFcmTokenUseCase>();
+  final _logoutUseCase = Get.find<LogoutUseCase>();
 
   Rx<User?> currentUser = Rx<User?>(null);
 
@@ -35,12 +40,27 @@ class UserController extends GetxController {
   // ── Public ────────────────────────────────────────────────────────────────
 
   Future<void> getUserDetails() async {
-    final response = await getUserInfoUsecase();
+    final response = await _getUserInfoUsecase();
 
     response.fold((_) => null, (data) {
       currentUser.value = data;
       _syncFcmToken();
     });
+  }
+
+  Future<void> logout() async {
+    Loader.show(message: 'Login out...');
+    final response = await _logoutUseCase();
+    Loader.dismiss();
+
+    response.fold(
+      (ex) {
+        Toast.error(ex.message);
+      },
+      (_) {
+        Get.offAllNamed(LoginPage.route);
+      },
+    );
   }
 
   // ── Private ───────────────────────────────────────────────────────────────

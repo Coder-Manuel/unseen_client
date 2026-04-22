@@ -151,7 +151,7 @@ class SettingsTab extends GetView<UserController> {
                   const SizedBox(height: 28),
 
                   // ── Logout ────────────────────────────────────────────────
-                  _LogoutButton(onTap: () {}),
+                  _LogoutButton(onTap: () async => await controller.logout()),
 
                   const SizedBox(height: 24),
 

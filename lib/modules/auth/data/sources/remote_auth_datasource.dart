@@ -14,6 +14,14 @@ abstract class RemoteAuthDatasource {
   Future<UserResponse> updatePhone(String phone);
   Future<Map<String, dynamic>?> updateNames(Map<String, dynamic> data);
   Future<void> logout();
+
+  // ── Password reset ─────────────────────────────────────────────────────────
+  Future<void> sendPasswordResetOtp(String email);
+  Future<AuthResponse> verifyPasswordResetOtp({
+    required String email,
+    required String otp,
+  });
+  Future<UserResponse> updatePassword(String newPassword);
 }
 
 class RemoteAuthDatasourceImpl extends RemoteAuthDatasource {
@@ -82,5 +90,29 @@ class RemoteAuthDatasourceImpl extends RemoteAuthDatasource {
   @override
   Future<void> logout() {
     return client.auth.signOut();
+  }
+
+  // ── Password reset ─────────────────────────────────────────────────────────
+
+  @override
+  Future<void> sendPasswordResetOtp(String email) {
+    return client.auth.resetPasswordForEmail(email);
+  }
+
+  @override
+  Future<AuthResponse> verifyPasswordResetOtp({
+    required String email,
+    required String otp,
+  }) {
+    return client.auth.verifyOTP(
+      email: email,
+      token: otp,
+      type: OtpType.recovery,
+    );
+  }
+
+  @override
+  Future<UserResponse> updatePassword(String newPassword) {
+    return client.auth.updateUser(UserAttributes(password: newPassword));
   }
 }

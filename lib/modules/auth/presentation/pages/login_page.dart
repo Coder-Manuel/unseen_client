@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:unseen/config/colors.dart';
 import 'package:unseen/core/utils/size.util.dart';
 import 'package:unseen/modules/auth/presentation/controllers/login_controller.dart';
+import 'package:unseen/modules/auth/presentation/pages/forgot_password_page.dart';
 import 'package:unseen/modules/auth/presentation/pages/signup_page.dart';
 import 'package:unseen/modules/auth/presentation/widgets/auth_widgets.dart';
 
@@ -88,7 +89,22 @@ class LoginPage extends GetView<LoginController> {
                     },
                   ),
                 ),
-                50.verticalSpace,
+                12.verticalSpace,
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: GestureDetector(
+                    onTap: () => Get.toNamed(ForgotPasswordPage.route),
+                    child: const Text(
+                      'Forgot Password?',
+                      style: TextStyle(
+                        color: AppColors.primary,
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ),
+                38.verticalSpace,
                 Row(
                   children: [
                     Expanded(

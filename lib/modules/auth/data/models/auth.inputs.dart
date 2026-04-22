@@ -79,3 +79,13 @@ class NamesInput {
     'last_name': lastName,
   };
 }
+
+class ResetPasswordInput {
+  final String email;
+  ResetPasswordInput({required this.email});
+}
+
+class UpdatePasswordInput {
+  final String newPassword;
+  UpdatePasswordInput({required this.newPassword});
+}

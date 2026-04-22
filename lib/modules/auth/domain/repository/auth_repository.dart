@@ -24,4 +24,14 @@ abstract class AuthRepository {
 
   // ─── Logout ────────────────────────────────────────────────────────────────
   Future<RepoResponse<bool>> logout();
+
+  // ─── Password reset ────────────────────────────────────────────────────────
+  /// Sends a recovery OTP to [input.email] via Supabase.
+  Future<RepoResponse<bool>> sendPasswordResetOtp(ResetPasswordInput input);
+
+  /// Verifies the recovery OTP — establishes a session required for [updatePassword].
+  Future<RepoResponse<bool>> verifyPasswordResetOtp(VerifyOtpInput input);
+
+  /// Updates the authenticated user's password. Call after [verifyPasswordResetOtp].
+  Future<RepoResponse<bool>> updatePassword(UpdatePasswordInput input);
 }

@@ -173,4 +173,65 @@ class AuthRepositoryImpl extends AuthRepository {
     );
     return response!;
   }
+
+  // ─── Password reset ────────────────────────────────────────────────────────
+
+  @override
+  Future<RepoResponse<bool>> sendPasswordResetOtp(
+    ResetPasswordInput input,
+  ) async {
+    final response = await ErrorWrapper.async<RepoResponse<bool>>(
+      () async {
+        await remoteDatasource.sendPasswordResetOtp(input.email);
+        return SuccessResponse(true);
+      },
+      onError: (_) =>
+          FailureResponse('Could not send reset code, kindly retry'),
+      library: _library,
+      description: 'while sending password reset OTP',
+    );
+    return response!;
+  }
+
+  @override
+  Future<RepoResponse<bool>> verifyPasswordResetOtp(
+    VerifyOtpInput input,
+  ) async {
+    final response = await ErrorWrapper.async<RepoResponse<bool>>(
+      () async {
+        final res = await remoteDatasource.verifyPasswordResetOtp(
+          email: input.email!,
+          otp: input.otp,
+        );
+        if (res.session == null) {
+          return FailureResponse('Invalid or expired code, kindly retry');
+        }
+        return SuccessResponse(true);
+      },
+      onError: (error) {
+        if (error.toString().contains('expired') ||
+            error.toString().contains('invalid')) {
+          return FailureResponse('Invalid or expired code, kindly retry');
+        }
+        return FailureResponse('An error occurred, kindly retry');
+      },
+      library: _library,
+      description: 'while verifying password reset OTP',
+    );
+    return response!;
+  }
+
+  @override
+  Future<RepoResponse<bool>> updatePassword(UpdatePasswordInput input) async {
+    final response = await ErrorWrapper.async<RepoResponse<bool>>(
+      () async {
+        await remoteDatasource.updatePassword(input.newPassword);
+        return SuccessResponse(true);
+      },
+      onError: (_) => FailureResponse('Could not update password, kindly retry'),
+      library: _library,
+      description: 'while updating password',
+    );
+    return response!;
+  }
 }
