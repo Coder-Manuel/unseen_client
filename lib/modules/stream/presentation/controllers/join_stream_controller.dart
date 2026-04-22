@@ -102,15 +102,18 @@ class JoinStreamController extends GetxController {
       },
       (data) async {
         try {
-          // Attach listeners before connecting so no early events are missed.
           _attachRoomListeners();
 
           await _room.connect(data.url, data.token);
 
-          // ChangeNotifier fallback for any track arrivals during handshake.
           _room.addListener(_refreshVideoTrack);
           await Future.delayed(const Duration(milliseconds: 400));
           _refreshVideoTrack();
+
+          // Route audio to loudspeaker now that the WebRTC audio unit has
+          // fully settled.  Calling this too early (before the delay) tears
+          // down the audio unit on iOS and silences incoming scout audio.
+          await _configureSpeaker();
 
           isConnecting.value = false;
           _startCountdown();
@@ -129,6 +132,22 @@ class JoinStreamController extends GetxController {
     final next = !isMicEnabled.value;
     await _room.localParticipant?.setMicrophoneEnabled(next);
     isMicEnabled.value = next;
+
+    // Enabling the mic initialises the WebRTC audio unit on iOS, which
+    // resets the output route back to earpiece.  Re-apply loudspeaker
+    // routing so the client continues hearing the scout after unmuting.
+    if (next) await _configureSpeaker();
+  }
+
+  /// Routes incoming audio to the loudspeaker.
+  ///
+  /// Must be called AFTER the WebRTC audio unit is fully negotiated.
+  /// [forceSpeakerOutput] uses `overrideOutputAudioPort(.speaker)` on iOS,
+  /// which works correctly while a mic track is simultaneously active.
+  Future<void> _configureSpeaker() async {
+    try {
+      await Hardware.instance.setSpeakerphoneOn(true, forceSpeakerOutput: true);
+    } catch (_) {}
   }
 
   /// Client voluntarily leaves — pops the page without opening the rating screen.
